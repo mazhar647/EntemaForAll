@@ -99,7 +99,7 @@ const Aside = ({ image,  collapsed, rtl, toggled, handleToggleSidebar  }) => {
           {/* <MenuItem><NavLink to="/CloneTimesheet">Clone Timesheet</NavLink></MenuItem> */}
           <MenuItem ><NavLink to="/ViewTimesheet">List of Timesheets</NavLink></MenuItem> 
           <MenuItem><NavLink to="/addpayment">Vendor Add Payment</NavLink></MenuItem> 
-          <MenuItem><NavLink to="/ViewVendorPayment">List of Payments</NavLink></MenuItem>
+          <MenuItem><NavLink to="/ViewVendorPayment">Vendor Claims</NavLink></MenuItem>
           </SubMenu>
 
           <SubMenu

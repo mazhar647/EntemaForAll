@@ -56,6 +56,20 @@ function CreateManpower() {
     const [MpHrRate, setMpHrRate] = useState();
     
     const [mpLov, setMPLov] = useState([]);
+    const [yearLov,setYearLov]=useState([]);
+
+    const getYearLovData = () => {
+        fetch("http://localhost:3009/getYearLov", {
+            method : 'Get',
+            headers:{
+                'Content-Type':'application/json',
+                    }
+        }).then(response => response.json())
+        .then(response => {setYearLov(response);
+        console.log('My API data Year: ',response);
+        });
+       return yearLov; 
+    } 
 
     const getMPLovData = () => {
         fetch("http://localhost:3009/getManpowerData", {
@@ -69,9 +83,24 @@ function CreateManpower() {
         });
        return mpLov; 
     }
+
+    const onChangeMPData = (value) => {
+
+        console.log('onchange value is : ', value);
+        let computedComments = mpLov;
+        console.log('onchange computedComments is : ', computedComments);
+        if (value){
+          computedComments = computedComments.filter((comment) => comment.MP_ID == value); 
+          
+          setManpowDispValue(computedComments[0].MP_NAME);
+        }
+        
+      }
+
     
     useEffect(() => {
         getMPLovData();
+        getYearLovData();
     },[]);
 
     let [taskList, setTasklist] = useState(
@@ -85,6 +114,21 @@ function CreateManpower() {
 
     const [users, setUsers] = useState([]);
 
+    const MonthLov = [
+        {key : "", value:"Select Month"},
+        {key : "1", value:"Jan"},
+        {key : "2", value:"Feb"},
+        {key : "3", value:"Mar"},
+        {key : "4", value:"Apr"},
+        {key : "5", value:"May"},
+        {key : "6", value:"Jun"},
+        {key : "7", value:"Jul"},
+        {key : "8", value:"Aug"},
+        {key : "9", value:"Sep"},
+        {key : "10", value:"Oct"},
+        {key : "11", value:"Nov"},
+        {key : "12", value:"Dec"}
+    ];
 
     const optionUnit = [
         { key: "Select Unit", value: "" },
@@ -171,6 +215,28 @@ function CreateManpower() {
         setUsers(updatedUsers);
     };
 
+    const onYearChange = (value) => {
+ 
+        axios.post("http://localhost:3009/getMPTimesheetValidation", {
+            
+            pManpower:MpManPower,
+            pMonth:MpMonth,
+            pYear:value,
+
+        })
+        .then((res) => {
+          console.log("My onchange year value : ",res.data[0].validate);
+
+          if (res.data[0].validate > 0){
+            alert("You have already generated timesheet for this MAnpower for the same Month and Year, Either Update the Value through report or create a New one");
+            setMpManPower("");
+            setMpMont("");
+            setMpYear("");
+        }
+        });
+        
+    }
+
     const handleChangeEvent = (e, index) => {
         console.log('e : ', e);
         const input = e.target.name;
@@ -180,10 +246,12 @@ function CreateManpower() {
 
         if (input === "MpManPower") {
             setMpManPower(e.target.value);
+            onChangeMPData(e.target.value);
         } else if (input === "MpMonth") {
             setMpMont(e.target.value);
         } else if (input === "MpYear") {
             setMpYear(e.target.value);
+            onYearChange(e.target.value);
         } else if (input === "MpDescription") {
             setMpDescription(e.target.value);
         } else if (input === "MpIqamaId") {
@@ -230,6 +298,7 @@ function CreateManpower() {
             mtsotrate:MpOtRate,
             mtstotal:MpTotalAmount,
             mtsgrid:true,
+            mpDispValue:manpowDispValue,
 
         })
         .then((res) => {
@@ -240,47 +309,6 @@ function CreateManpower() {
 
         console.log('test submit');
     }
-
-    // useEffect(() => {
-    //     if (MpMonthlyRate != "" && MpExpectedWorkingHours != "") {
-    //         // let perDay = Math.round(MpMonthlyRate/MpExpectedWorkingHours);
-    //         let perDay = MpMonthlyRate / MpExpectedWorkingHours;
-    //         setMpOtRate(perDay.toFixed(2));
-    //         setMpHrRate(perDay.toFixed(2));
-    //     }
-    // }, [MpMonthlyRate, MpExpectedWorkingHours])
-
-    // const testing = () => {
-    //     console.log('testing bluee event');
-    //     let Ottime = 0;
-    //     let RHtime = 0;
-    //     let OTamount = 0;
-    //     let RHamount = 0;
-    //     let TotalAmount = 0;
-
-    //     if (MpTotalHours > MpExpectedWorkingHours) {
-    //         console.log('Greater man');
-    //         Ottime = MpTotalHours - MpExpectedWorkingHours;
-    //         OTamount = MpOtRate * Ottime;
-    //         setMpTotalOt(OTamount);
-    //         console.log('Ottime : ', Ottime);
-    //         console.log('OTamount : ', OTamount);
-
-    //         RHamount = MpExpectedWorkingHours * MpHrRate;
-    //         TotalAmount = OTamount + RHamount;
-    //         setMpTotal(TotalAmount);
-
-    //         console.log('RHamount : ', RHamount);
-    //         console.log('TotalAmount : ', TotalAmount);
-
-    //     } else {
-    //         console.log('lesser man');
-    //         RHamount = MpTotalHours * MpHrRate;
-    //         setMpTotalOt(0);
-    //         setMpTotal(RHamount.toFixed(2));
-    //     }
-
-    // }
 
     return (
         <>
@@ -302,39 +330,16 @@ function CreateManpower() {
                             </select>
                         </div>
                         <div class="col-md-4 mb-3" >
-                            <label for="userRole">Month</label>
+                            <label for="MpMonth">Month</label>
                             <select class="form-control is-valid" value={MpMonth} id="MpMonth" name="MpMonth" required>
-                                <option value="">Select Month</option>
-                                <option value="1">Jan</option>
-                                <option value="2">Feb</option>
-                                <option value="3">Mar</option>
-                                <option value="4">Apr</option>
-                                <option value="5">May</option>
-                                <option value="6">Jun</option>
-                                <option value="7">Jul</option>
-                                <option value="8">Aug</option>
-                                <option value="9">Sep</option>
-                                <option value="10">Oct</option>
-                                <option value="11">Nov</option>
-                                <option value="12">Dec</option>
+                            {MonthLov.map((data) => <option key={data.key} value={data.key}>{data.value}</option>)} 
                             </select>
                         </div>
                         <div class="col-md-4 mb-3" >
                             <label for="userRole">Years</label>
                             <select class="form-control is-valid" value={MpYear} id="MpYear" name="MpYear" required>
                                 <option value="">Select Year</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
-                                <option value="2028">2028</option>
-                                <option value="2029">2029</option>
-                                <option value="2030">2030</option>
-                                <option value="2031">2031</option>
+                                {yearLov.map((data) => <option key={data.ID} value={data.ID}>{data.YEAR}</option>)} 
                             </select>
                         </div>
                     </div>
@@ -377,14 +382,14 @@ function CreateManpower() {
 
                     <div >
                         <Container className={classes.root}>
-                            <ButtonGroup disableElevation variant="contained" color="primary">
+                            {/* <ButtonGroup disableElevation variant="contained" color="primary">
                                 <Button color="default" onClick={addUser} disabled={isDisabled}>
                                     Show
                                 </Button>
                                 <Button color="default" onClick={removeUsers} disabled={!isDisabledRemove}>
                                     Remove
                                 </Button>
-                            </ButtonGroup>
+                            </ButtonGroup> */}
                             {users.map((task, i) => (
                                 <Grid
                                     container

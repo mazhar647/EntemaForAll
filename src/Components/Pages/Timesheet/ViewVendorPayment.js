@@ -71,6 +71,7 @@ const DataTable = () => {
   const test = (data) => {
     alert("hurrray :" + data);
   };
+  
   const commentsData = useMemo(() => {
     let computedComments = comments;
 
@@ -114,7 +115,7 @@ const DataTable = () => {
       >
         <div className="heading-layout1">
           <div className="item-title">
-            <h3 style={{ padding: "50px" }}>View Clients</h3>
+            <h3 style={{ padding: "50px" }}>Vendor Claims</h3>
           </div>
         </div>
 

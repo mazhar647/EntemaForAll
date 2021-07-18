@@ -204,7 +204,7 @@ const DataTable = () => {
       <div class="container" style={{ paddingTop: "3px", paddingLeft: "5px" }}>
         <div className="heading-layout1">
           <div className="item-title">
-            <h3 style={{ padding: "50px" }}>View Timesheet</h3>
+            <h3 style={{ padding: "50px" }}>List of Timesheet's</h3>
           </div>
         </div>
 

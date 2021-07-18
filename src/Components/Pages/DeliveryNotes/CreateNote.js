@@ -1,15 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 function CreateNote() {
 
+    const history = useHistory();
+
     const [DnClient, setDnClient] = useState();
+    const [clientDispValue, setClientDispValue] = useState();
+    const [clientPersonValue, setClientPersonValue] = useState();
     const [DnAddress, setDnAddress] = useState();
     const [DnShippingAddress, setDnShippingAddress] = useState();
     const [DnOrderDate, setDnOrderDate] = useState();
     const [DnDispatchDate, setDnDispatchDate] = useState();
     const [DnNotice, setDnNotice] = useState();
     const [clientLov, setClientLov] = useState([]);
+    
     
 
     useEffect(() => {
@@ -29,6 +35,21 @@ function CreateNote() {
     return clientLov; 
     } 
 
+
+    const onChangeClientData = (value) => {
+
+        console.log('onchange value is : ', value);
+        let computedComments = clientLov;
+        console.log('onchange computedComments is : ', computedComments);
+        if (value){
+          computedComments = computedComments.filter((comment) => comment.CLIENT_ID == value); 
+          
+          setClientPersonValue(computedComments[0].CLIENT_CPNAME);
+          setClientDispValue(computedComments[0].CLIENT_COMP_NAME);
+        }
+        
+      }
+
     const handleChangeEvent = (e) => {
         console.log('e : ', e);
         const input = e.target.name;
@@ -37,6 +58,7 @@ function CreateNote() {
 
         if (input === "DnClient") {
             setDnClient(e.target.value);
+            onChangeClientData(e.target.value);
         } else if (input === "DnAddress") {
             setDnAddress(e.target.value);
         } else if (input === "DnShippingAddress") {
@@ -62,6 +84,8 @@ function CreateNote() {
             delorderdate:DnOrderDate,
             deldispdate:DnDispatchDate,
             delnotice:DnNotice,
+            clientDispValue:clientDispValue,
+            clientPersonValue:clientPersonValue,
 
         })
         .then((res) => {
@@ -69,6 +93,7 @@ function CreateNote() {
         });
 
         console.log('test submit');
+        history.push("/");
     }
 
 

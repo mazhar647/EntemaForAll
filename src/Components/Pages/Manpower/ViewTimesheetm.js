@@ -12,6 +12,10 @@ const DataTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sorting, setSorting] = useState({ field: "", order: "" });
+  
+  const [yearLov, setYearLov] = useState([]);
+  const [tsMonth, settsMont] = useState();
+  const [tsYear, settsYear] = useState();
 
   const ITEMS_PER_PAGE = 10;
 
@@ -28,20 +32,69 @@ const DataTable = () => {
     { name: "Delete", field: "Delete", sortable: false },
   ];
 
-  const getData = () => {
-    showLoader();
 
-    fetch("http://localhost:3009/getManpowerTimesheetData")
+  const MonthLov = [
+    { key: "", value: "Select Month" },
+    { key: "1", value: "Jan" },
+    { key: "2", value: "Feb" },
+    { key: "3", value: "Mar" },
+    { key: "4", value: "Apr" },
+    { key: "5", value: "May" },
+    { key: "6", value: "Jun" },
+    { key: "7", value: "Jul" },
+    { key: "8", value: "Aug" },
+    { key: "9", value: "Sep" },
+    { key: "10", value: "Oct" },
+    { key: "11", value: "Nov" },
+    { key: "12", value: "Dec" },
+  ];
+  
+  const getYearLovData = () => {
+    fetch("http://localhost:3009/getYearLov", {
+      method: "Get",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
-      .then((json) => {
-        hideLoader();
-        setComments(json);
-        console.log(json);
+      .then((response) => {
+        setYearLov(response);
+        console.log("My API data Year: ", response);
       });
+    return yearLov;
+  };
+
+  const getData = () => {
+    // showLoader();
+
+    // fetch("http://localhost:3009/getMPTimesheetDataonYearMonth")
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     hideLoader();
+    //     setComments(json);
+    //     console.log(json);
+    //   });
+
+    console.log('month : ', tsMonth);
+    console.log('year : ', tsYear);
+
+    axios.post("http://localhost:3009/getMPTimesheetDataonYearMonth", {
+        
+        venMonth:tsMonth,
+        venYear:tsYear,
+    })
+    .then((res) => {
+            console.log("updated Values Successfully : ", res.data);
+            setComments(res.data);
+            // hideLoader();
+    });
+
+
   };
 
   useEffect(() => {
-    getData();
+    // getData();
+    getYearLovData();
   }, []);
 
   const removeMPTimeSheet = (tsId) => {
@@ -89,6 +142,12 @@ const DataTable = () => {
     );
   }, [comments, currentPage, search, sorting]);
 
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    getData();
+  };
+
   return (
     <>
         <div
@@ -97,25 +156,69 @@ const DataTable = () => {
         >
           <div className="heading-layout1">
             <div className="item-title">
-              <h3 style={{ padding: "50px" }}>View ManPower Timesheet</h3>
+              <h3 style={{ padding: "50px" }}>List of ManPower Timesheet</h3>
             </div>
           </div>
 
           <div className="row w-100">
             <div className="col mb-3 col-12 text-center">
+            <form onSubmit={handleSubmit}>
               <div className="row">
-                <div
-                  className="col-md-6 d-flex flex-row-reverse"
-                  style={{ marginBottom: "30px", marginLeft: "340px" }}
-                >
-                  <Search
-                    onSearch={(value) => {
-                      setSearch(value);
-                      setCurrentPage(1);
-                    }}
-                  />
+                <div class="col-md-4 mb-3">
+                  <label for="userRole">Month</label>
+                  <select
+                    class="form-control is-valid"
+                    value={tsMonth}
+                    id="tsMonth"
+                    name="tsMonth"
+                    onChange={(e)=> {settsMont(e.target.value)}}
+                    required
+                  >
+                    {MonthLov.map((data) => (
+                      <option key={data.key} value={data.key}>
+                        {data.value}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                <div class="col-md-4 mb-3">
+                  <label for="userRole">Years</label>
+                  <select
+                    class="form-control is-valid"
+                    value={tsYear}
+                    id="tsYear"
+                    name="tsYear"
+                    onChange={(e)=> {settsYear(e.target.value)}}
+                    required
+                  >
+                    <option value="">Select Years</option>
+                    {yearLov.map((data) => (
+                      <option key={data.ID} value={data.ID}>
+                        {data.YEAR}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* <button type="submit" class="btn btn-outline-success"  >Filter</button> */}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  style={{ marginTop: "31px", marginBottom: "40px" }}
+                >
+                  Filter
+                </Button>
+
+                {/* <div className="col-md-6 d-flex flex-row-reverse" style={{marginBottom:'30px',marginLeft:'340px'}}>
+                            <Search
+                                onSearch={value => {
+                                    setSearch(value);
+                                    setCurrentPage(1);
+                                }}
+                            />
+                        </div> */}
               </div>
+            </form>
 
               <table className="table table-striped">
                 <TableHeader
@@ -129,7 +232,7 @@ const DataTable = () => {
                         {comment.MMTS_ID}
                       </th>
                       <td onClick={() => test(comment.MMTS_ID)}>
-                        {comment.MTS_MANPOWER}
+                        {comment.MTS_MP_DISP_VALUE}
                       </td>
                       <td>{comment.MTS_MONTH}</td>
                       <td>{comment.MTS_YEAR}</td>

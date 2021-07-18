@@ -392,7 +392,7 @@ function Createtimesheet() {
                         <div class="col-md-4 mb-3" >
                             <label for="userRole">Years</label>
                             <select class="form-control is-valid" value={tsYear} id="tsYear" name="tsYear" required>
-                                <option value="">Select Years</option>
+                                <option value="">Select Year</option>
                                 {yearLov.map((data) => <option key={data.ID} value={data.ID}>{data.YEAR}</option>)} 
                             </select>
                         </div>
@@ -449,13 +449,13 @@ function Createtimesheet() {
                     <div >
                     <Container className={classes.root}>
 
-                        <ButtonGroup disableElevation variant="contained" color="primary">
+                        {/* <ButtonGroup disableElevation variant="contained" color="primary">
                             <Button color="default" onClick={addUser} disabled={isDisabled}>
                                 Show
                             </Button>
                             <Button color="default" onClick={removeUsers} disabled={!isDisabledRemove}>
                                 Remove
-                            </Button></ButtonGroup>
+                            </Button></ButtonGroup> */}
                         {users.map((task, i) => (
                             <Grid
                                 container
