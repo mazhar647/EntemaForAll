@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Createpurchaseorder() {
-
   const history = useHistory();
   const classes = useStyles();
 
@@ -69,10 +68,9 @@ function Createpurchaseorder() {
     "1. Above rate is applicable for 10 hours per day, 6 days a week, 260 hours per Month. \n2. Working Duration: 2 Month Extandable. \n3. Supply Food, accommodation & Transportation scope Entema al-shamal. \n4. Above Rate is exclusive of VAT. \n5. If you need any clarification on above matter or any assistance please feel free to contract undersigned. \n6. Vendor has to return the same purchase order to Entema Al-shamal by Fax or Email after Confirmation Signature."
   );
 
-  const [vendorLov,setVendorLov] = useState([]);
-  const [sigName,setSigName] = useState();
+  const [vendorLov, setVendorLov] = useState([]);
+  const [sigName, setSigName] = useState();
   // const [sigNameNTitle,setSigNameNTitle] = useState();
-
 
   const userTemplate = {
     description: "",
@@ -93,33 +91,32 @@ function Createpurchaseorder() {
   ];
 
   const onChangeVendorDetails = (vendorID) => {
-
-    console.log('onchange value is : ', vendorID);
+    console.log("onchange value is : ", vendorID);
     let computedComments = vendorLov;
-    console.log('onchange computedComments is : ', computedComments);
-    if (vendorID){
-      computedComments = computedComments.filter((comment) => comment.VENDOR_ID == vendorID); 
+    console.log("onchange computedComments is : ", computedComments);
+    if (vendorID) {
+      computedComments = computedComments.filter(
+        (comment) => comment.VENDOR_ID == vendorID
+      );
     }
-    console.log('data set value is : ', computedComments);
-        setPocode(computedComments[0].VENDOR_CODE);
-        setPophone(computedComments[0].VENDOR_PHONE);
-        setPocpperson(computedComments[0].VENDOR_CPERSON);
-        setPomobile(computedComments[0].VENDOR_PHONE);
-        setPoemail(computedComments[0].VENDOR_EMAIL);
-        setPovat(computedComments[0].VENDOR_VAT);
-        setPoadd(computedComments[0].VENDOR_ADD);
-        setSigName(computedComments[0].VENDOR_NAME);
-        // setSigNameNTitle(computedComments[0].VENDOR_CPERSON);
+    console.log("data set value is : ", computedComments);
+    setPocode(computedComments[0].VENDOR_CODE);
+    setPophone(computedComments[0].VENDOR_PHONE);
+    setPocpperson(computedComments[0].VENDOR_CPERSON);
+    setPomobile(computedComments[0].VENDOR_PHONE);
+    setPoemail(computedComments[0].VENDOR_EMAIL);
+    setPovat(computedComments[0].VENDOR_VAT);
+    setPoadd(computedComments[0].VENDOR_ADD);
+    setSigName(computedComments[0].VENDOR_NAME);
+    // setSigNameNTitle(computedComments[0].VENDOR_CPERSON);
 
-    if(computedComments[0].VENDOR_VAT){
+    if (computedComments[0].VENDOR_VAT) {
       setPogst(5);
       onChangeGST(5);
-    }else{
+    } else {
       setPogst(0);
       onChangeGST(0);
     }
-
-
   };
 
   const generateUniqueId = () => {
@@ -133,49 +130,53 @@ function Createpurchaseorder() {
       currentDate.getMinutes() +
       currentDate.getSeconds() +
       currentDate.getMilliseconds();
-    console.log('My unique Values :', uniqueValue);
+    console.log("My unique Values :", uniqueValue);
     return uniqueValue;
   };
 
-
-  const setDateFormat = ()=> {
+  const setDateFormat = () => {
     let currentDate = new Date();
-    let currentYear = new Intl.DateTimeFormat("en", { year: "numeric" }).format(currentDate);
-    let currentMonth = new Intl.DateTimeFormat("en", {month: "numeric",}).format(currentDate);
-    let currentDay = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(currentDate);
-    
+    let currentYear = new Intl.DateTimeFormat("en", { year: "numeric" }).format(
+      currentDate
+    );
+    let currentMonth = new Intl.DateTimeFormat("en", {
+      month: "numeric",
+    }).format(currentDate);
+    let currentDay = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(
+      currentDate
+    );
+
     console.log(`${currentDay}-${currentMonth}-${currentYear}`);
 
     // let formatedDate = currentDay + "-0" + currentMonth + "-" + currentYear;
 
     let formatedDate;
 
-    if (currentMonth in [1,2,3,4,5,6,7,8,9]){
-        formatedDate = currentYear + "-0" + currentMonth + "-" + currentDay;
-    }else{
-        formatedDate = currentYear + "-" + currentMonth + "-" + currentDay;
+    if (currentMonth in [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+      formatedDate = currentYear + "-0" + currentMonth + "-" + currentDay;
+    } else {
+      formatedDate = currentYear + "-" + currentMonth + "-" + currentDay;
     }
 
     return formatedDate;
-  }
-
+  };
 
   const getVendorLovData = () => {
     fetch("http://localhost:3009/getVendorData", {
-        method : 'Get',
-        headers:{
-            'Content-Type':'application/json',
-                }
-    }).then(response => response.json())
-    .then(response => {setVendorLov(response);
-    console.log('My API data : ',response);
-    });
-   return vendorLov; 
-} 
-
+      method: "Get",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setVendorLov(response);
+        console.log("My API data : ", response);
+      });
+    return vendorLov;
+  };
 
   useEffect(() => {
-    
     getVendorLovData();
     setPodate(setDateFormat());
 
@@ -190,135 +191,116 @@ function Createpurchaseorder() {
     setOrderItem([...orderItem, userTemplate]);
   };
 
-const handleBlur = (e, index) => {
-    console.log('blurr on call e value : ', e);
-    console.log('blurr on call index value : ', index);
+  const handleBlur = (e, index) => {
+    console.log("blurr on call e value : ", e);
+    console.log("blurr on call index value : ", index);
 
-  if (e.target.name === "unit_rate"){
-  if(orderItem[index].qty != ""){
-    let amount = orderItem[index].qty * orderItem[index].unit_rate;
+    if (e.target.name === "unit_rate") {
+      if (orderItem[index].qty != "") {
+        let amount = orderItem[index].qty * orderItem[index].unit_rate;
 
-  const updatedUsers = orderItem.map((item, i) =>
-  index === i
-    ? Object.assign(item, { ["amount"]: amount })
-    : item
-  );
+        const updatedUsers = orderItem.map((item, i) =>
+          index === i ? Object.assign(item, { ["amount"]: amount }) : item
+        );
 
-  setOrderItem(updatedUsers);
-  }
-  } else if(e.target.name === "qty"){
-    if(orderItem[index].unit_rate != ""){
-      let amount = orderItem[index].qty * orderItem[index].unit_rate;
+        setOrderItem(updatedUsers);
+      }
+    } else if (e.target.name === "qty") {
+      if (orderItem[index].unit_rate != "") {
+        let amount = orderItem[index].qty * orderItem[index].unit_rate;
 
-      const updatedUsers = orderItem.map((item, i) =>
-      index === i
-        ? Object.assign(item, { ["amount"]: amount })
-        : item
-      );
-      
-      setOrderItem(updatedUsers);
+        const updatedUsers = orderItem.map((item, i) =>
+          index === i ? Object.assign(item, { ["amount"]: amount }) : item
+        );
+
+        setOrderItem(updatedUsers);
+      }
     }
-  }
-  
-  let test123 = 0;
 
-  for(var i=0; i< orderItem.length; i++){
-    test123 = test123 + orderItem[i].amount;
-  }
-
-  let gtt = 0;
-  let gt = 0;
-  let cc = 0;
-
-  if (pogst > 0){
-
-    gtt = test123/100;
-    cc = gtt * pogst;
-
-    // gtt = test123 / gstValue;
-    gt = test123 + cc ;
-  }else{
-    gt = test123;
-  }
-
-  setPototal(test123);
-  setPograndtotal(gt);
-
-  //  console.log('blurr on call total amount value : ', test123);
-  //  console.log('blurr on call order item value : ', amount);
-
-}
-
-const calculationOnDeleteRow = (value) => {
-
-  console.log('calculationOnDeleteRow before if : ', value);
-
-  if (orderItem.length > 0){
-  
-  if (orderItem[value].amount != ''){
-
-    let excludeValue = orderItem[value].amount;
-      
-    let tempPoTotal = pototal - excludeValue;  
-    
-    setPototal(tempPoTotal);
-
-    if (pogst > 0){
-      onChangeGST(pogst);
-    }
-    else{
-      setPograndtotal(tempPoTotal);
-    }
-    
-  
-   }
-  }
-}
-
-const onChangeGST = (gstValue) => {
-
-  if(pototal > 0){
     let test123 = 0;
 
-    for(var i=0; i< orderItem.length; i++){
+    for (var i = 0; i < orderItem.length; i++) {
       test123 = test123 + orderItem[i].amount;
     }
-  
+
     let gtt = 0;
     let gt = 0;
     let cc = 0;
-  
-    if (gstValue > 0){
 
-      gtt = test123/100;
-      cc = gtt * gstValue;
+    if (pogst > 0) {
+      gtt = test123 / 100;
+      cc = gtt * pogst;
 
       // gtt = test123 / gstValue;
-      gt = test123 + cc ;
-    }else{
+      gt = test123 + cc;
+    } else {
       gt = test123;
     }
+
+    setPototal(test123);
     setPograndtotal(gt);
-  }
-  
-}
 
-const getArraySum = (a) => {
-  var total=0;
-  for(var i in a) { 
+    //  console.log('blurr on call total amount value : ', test123);
+    //  console.log('blurr on call order item value : ', amount);
+  };
+
+  const calculationOnDeleteRow = (value) => {
+    console.log("calculationOnDeleteRow before if : ", value);
+
+    if (orderItem.length > 0) {
+      if (orderItem[value].amount != "") {
+        let excludeValue = orderItem[value].amount;
+
+        let tempPoTotal = pototal - excludeValue;
+
+        setPototal(tempPoTotal);
+
+        if (pogst > 0) {
+          onChangeGST(pogst);
+        } else {
+          setPograndtotal(tempPoTotal);
+        }
+      }
+    }
+  };
+
+  const onChangeGST = (gstValue) => {
+    if (pototal > 0) {
+      let test123 = 0;
+
+      for (var i = 0; i < orderItem.length; i++) {
+        test123 = test123 + orderItem[i].amount;
+      }
+
+      let gtt = 0;
+      let gt = 0;
+      let cc = 0;
+
+      if (gstValue > 0) {
+        gtt = test123 / 100;
+        cc = gtt * gstValue;
+
+        // gtt = test123 / gstValue;
+        gt = test123 + cc;
+      } else {
+        gt = test123;
+      }
+      setPograndtotal(gt);
+    }
+  };
+
+  const getArraySum = (a) => {
+    var total = 0;
+    for (var i in a) {
       total += a[i];
-  }
-  return total;
-}
-
-
+    }
+    return total;
+  };
 
   const changeHandler = (e, index) => {
     // console.log("Check my index :", index);
 
     // console.log(' target name :',e.target.name);
-
-    
 
     const updatedUsers = orderItem.map((item, i) =>
       index === i
@@ -329,10 +311,10 @@ const getArraySum = (a) => {
 
     let test = updatedUsers.length - 1;
 
-    if (e.target.name === "unit_rate"){
-      console.log('value of quamtity :', e);   
-      console.log('value of quamtity bhaya :', updatedUsers[test].qty);   
-     }
+    if (e.target.name === "unit_rate") {
+      console.log("value of quamtity :", e);
+      console.log("value of quamtity bhaya :", updatedUsers[test].qty);
+    }
 
     setOrderItem(updatedUsers);
   };
@@ -348,8 +330,7 @@ const getArraySum = (a) => {
   };
 
   const handleChangeEvent = (e, index) => {
-
-console.log('e : ',e);
+    console.log("e : ", e);
 
     const input = e.target.name;
 
@@ -407,12 +388,19 @@ console.log('e : ',e);
     } else if (input === "conditionTerms") {
       setConditionTerms(e.target.value);
     } else if (["description", "unit", "qty", "unit_rate"].includes(input)) {
-      console.log('exceptional handling');
-      changeHandler(e,index);
+      console.log("exceptional handling");
+      changeHandler(e, index);
     }
 
-    console.log("Name : ", e.target.name, " - Value - ", e.target.value, " - dataset id - ",e.target);
-    console.log("log of order Items : ",orderItem);
+    console.log(
+      "Name : ",
+      e.target.name,
+      " - Value - ",
+      e.target.value,
+      " - dataset id - ",
+      e.target
+    );
+    console.log("log of order Items : ", orderItem);
   };
 
   // const submitMultiRowData = (formData) => {
@@ -433,7 +421,7 @@ console.log('e : ',e);
 
     axios
       .post("http://localhost:3009/insertPOData", {
-        poid : podocno,
+        poid: podocno,
         podocno: podocno,
         podate: podate,
         porevno: porevno,
@@ -461,17 +449,15 @@ console.log('e : ',e);
         deliveryTerms: deliveryTerms,
         conditionTerms: conditionTerms,
         taskList: orderItem,
-        vendorDispName:sigName,
+        vendorDispName: sigName,
       })
       .then((res) => {
         console.log("updated Values Successfully : ", res.data);
       });
 
+    history.push("/");
 
-      history.push("/");
-      
     console.log("multirow  data :", orderItem);
-
   };
 
   return (
@@ -487,7 +473,7 @@ console.log('e : ',e);
                 <h5 style={{ color: "blue" }}>New Purchase Orders</h5>
               </div>
             </div>
-          
+
             <div class="col-md-4 mb-3">
               <label htmlFor="podocno">Doc No : </label>
               &nbsp;{podocno}
@@ -565,8 +551,14 @@ console.log('e : ',e);
                 name="povendor"
                 required
               >
-                        <option key="" value="">Select Vendor</option>
-                        {vendorLov.map((data) => <option key={data.VENDOR_ID} value={data.VENDOR_ID}>{data.VENDOR_NAME}</option>)} 
+                <option key="" value="">
+                  Select Vendor
+                </option>
+                {vendorLov.map((data) => (
+                  <option key={data.VENDOR_ID} value={data.VENDOR_ID}>
+                    {data.VENDOR_NAME}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="row">
@@ -713,11 +705,7 @@ console.log('e : ',e);
             </div>
 
             {/* <Orderitem /> */}
-            <table
-              className="table"
-              id="DataTables_Table_test"
-              role="grid"
-            >
+            <table className="table" id="DataTables_Table_test" role="grid">
               <thead>
                 <tr>
                   <th>Sr No</th>
@@ -771,10 +759,7 @@ console.log('e : ',e);
                         >
                           {optionUnit.map((data) => {
                             return (
-                              <option
-                                key={data.key}
-                                value={data.value}
-                              >
+                              <option key={data.key} value={data.value}>
                                 {data.key}
                               </option>
                             );
@@ -791,7 +776,7 @@ console.log('e : ',e);
                         variant="outlined"
                         onChange={(e) => handleChangeEvent(e, index)}
                         value={item.qty}
-                        onBlur={(e) => handleBlur(e, index)} 
+                        onBlur={(e) => handleBlur(e, index)}
                         fullWidth
                       />
                     </Grid>
@@ -803,7 +788,7 @@ console.log('e : ',e);
                         variant="outlined"
                         onChange={(e) => handleChangeEvent(e, index)}
                         value={item.unit_rate}
-                        onBlur={(e) => handleBlur(e, index)} 
+                        onBlur={(e) => handleBlur(e, index)}
                         fullWidth
                       />
                     </Grid>
@@ -828,11 +813,12 @@ console.log('e : ',e);
                     </Grid>
                   </Grid>
                 ))}
-                <Button variant="contained" color="primary" onClick={addItem}>
-                  Add Order Item
-                </Button>
               </Paper>
             </Container>
+            <Button type="button" variant="contained" color="primary" onClick={addItem} style={{ marginTop: "10px" }}>
+              Add Order Item
+            </Button>
+
             <hr style={{ backgroundColor: "green" }} />
             <div class="col-md-3 mb-3">
               <label htmlFor="userActdate">TOTAL</label>
@@ -848,7 +834,9 @@ console.log('e : ',e);
                 name="pogst"
                 value={pogst}
                 onChange={handleChangeEvent}
-                onBlur={(e) => {onChangeGST(e.target.value)}}
+                onBlur={(e) => {
+                  onChangeGST(e.target.value);
+                }}
                 required
               />
             </div>
@@ -910,11 +898,13 @@ console.log('e : ',e);
                   <h3>{sigName}</h3>
                   <div className="row">
                     <div className="col-sm-8 col-xs-8 bot-left">
-                      Name &amp; Title 
+                      Name &amp; Title
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-sm-5 col-xs-6 bot-left">Date : {podate}</div>
+                    <div className="col-sm-5 col-xs-6 bot-left">
+                      Date : {podate}
+                    </div>
                     <div className="col-sm-7 col-xs-6 bot-right"></div>
                   </div>
                 </div>
