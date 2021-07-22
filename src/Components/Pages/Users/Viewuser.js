@@ -57,6 +57,22 @@ const DataTable = () => {
       
   };
 
+  const displayStatus = (value) => {
+      let output;
+  
+      switch (parseInt(value)) {
+        case 1:
+          output = "Active";
+          break;
+        case 2:
+          output = "In Active";
+      }
+      console.log("switch value : ", output);
+      return output;
+
+  
+  }
+
 
   useEffect(() => {
     getData();
@@ -152,7 +168,7 @@ const DataTable = () => {
                       <td>{comment.USER_PHONE}</td>
                       <td>{comment.USER_DESIG}</td>
                       <td>{comment.USER_ROLE}</td>
-                      <td>{comment.USER_STATUS}</td>
+                      <td>{displayStatus(comment.USER_STATUS)}</td>
                       <td>
                         <IconButton color="secondary">
                           <DeleteOutlineIcon

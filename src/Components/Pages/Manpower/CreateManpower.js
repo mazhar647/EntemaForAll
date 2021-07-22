@@ -54,6 +54,7 @@ function CreateManpower() {
     const [MpTotal, setMpTotal] = useState();
     const [MpWorkHrs, setMpWorkHrs] = useState();
     const [MpHrRate, setMpHrRate] = useState();
+    const [regularhrs, setRegularhrs] = useState();
     
     const [mpLov, setMPLov] = useState([]);
     const [yearLov,setYearLov]=useState([]);
@@ -237,6 +238,23 @@ function CreateManpower() {
         
     }
 
+    const calculateTotalAmount = () => {
+
+        if (MpHrRate === MpOtRate) {
+            setMpTotalAmount(MpWorkHrs * MpHrRate);
+        } else {
+            let x = MpWorkHrs - MpOtHrs;
+            console.log("x ki calue ", x);
+            setRegularhrs(x);
+            let otAmount = MpOtHrs * MpOtRate;
+            let hrAmount = MpHrRate * regularhrs;
+            setMpTotalAmount(otAmount + hrAmount);
+
+ 
+
+        }
+    };
+
     const handleChangeEvent = (e, index) => {
         console.log('e : ', e);
         const input = e.target.name;
@@ -356,7 +374,7 @@ function CreateManpower() {
                     <div className="row">
                         <div class="col-md-4 mb-3">
                             <label for="userName">Work Hrs</label>
-                            <input type="text" class="form-control is-valid" value={MpWorkHrs} id="MpWorkHrs" name="MpWorkHrs" />
+                            <input type="text" class="form-control is-valid" value={MpWorkHrs} id="MpWorkHrs" onBlur={calculateTotalAmount} name="MpWorkHrs" />
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="userName">Ot Hrs</label>
@@ -365,18 +383,18 @@ function CreateManpower() {
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="userName">Hr Rate</label>
-                            <input type="text" class="form-control is-valid" value={MpHrRate} id="MpHrRate" name="MpHrRate" required />
+                            <input type="text" class="form-control is-valid" value={MpHrRate} id="MpHrRate" onBlur={calculateTotalAmount} name="MpHrRate" required />
 
                         </div> </div><div className="row">
                         <div class="col-md-4 mb-3">
                             <label for="userName">Ot Rate</label>
-                            <input type="text" class="form-control is-valid" value={MpOtRate} id="MpOtRate" name="MpOtRate" required />
+                            <input type="text" class="form-control is-valid" value={MpOtRate} id="MpOtRate" name="MpOtRate" onBlur={calculateTotalAmount} required />
                         </div>
 
 
                         <div class="col-md-4 mb-3">
                             <label for="userName">Total Amount</label>
-                            <input type="text" class="form-control is-valid" value={MpTotalAmount} id="MpTotalAmount" name="MpTotalAmount" required />
+                            <input type="text" class="form-control is-valid" value={MpTotalAmount} id="MpTotalAmount" name="MpTotalAmount" disabled required />
                         </div>
                     </div>
 

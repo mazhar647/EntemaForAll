@@ -249,6 +249,32 @@ const handleBlur = (e, index) => {
 
 }
 
+const calculationOnDeleteRow = (value) => {
+
+  console.log('calculationOnDeleteRow before if : ', value);
+
+  if (orderItem.length > 0){
+  
+  if (orderItem[value].amount != ''){
+
+    let excludeValue = orderItem[value].amount;
+      
+    let tempPoTotal = pototal - excludeValue;  
+    
+    setPototal(tempPoTotal);
+
+    if (pogst > 0){
+      onChangeGST(pogst);
+    }
+    else{
+      setPograndtotal(tempPoTotal);
+    }
+    
+  
+   }
+  }
+}
+
 const onChangeGST = (gstValue) => {
 
   if(pototal > 0){
@@ -317,6 +343,8 @@ const getArraySum = (a) => {
     filteredUsers.splice(index, 1);
 
     setOrderItem(filteredUsers);
+
+    calculationOnDeleteRow(index);
   };
 
   const handleChangeEvent = (e, index) => {
@@ -788,6 +816,7 @@ console.log('e : ',e);
                         variant="outlined"
                         onChange={(e) => handleChangeEvent(e, index)}
                         value={item.amount}
+                        disabled
                         fullWidth
                       />
                     </Grid>
