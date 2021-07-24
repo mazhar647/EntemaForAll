@@ -17,6 +17,7 @@ function Adduser(props) {
     const [ userPhone, setUserPhone] = useState();
     const [ userDesignation, setUserDesignation] = useState();
     const [ userRole, setUserRole] = useState();
+    const [ userDispRole, setUserDispRole] = useState();
     const [ userStatus, setUserStatus] = useState("1");
     const [ userActdate, setUserActdate] = useState();
     const [ userDactdate, setUserDactdate] = useState();
@@ -55,6 +56,17 @@ function Adduser(props) {
         getRoleLovData();
         setUserActdate(setDateFormat());
     },[]);
+
+    const onRoleChange = (value) => {
+        console.log('onchange value is : ', value);
+        let computedComments = roleLov;
+        console.log('onchange computedComments is : ', computedComments);
+        if (value){
+          computedComments = computedComments.filter((comment) => comment.RL_ID == value); 
+          
+          setUserDispRole(computedComments[0].RL_NAME);
+        }
+    }
 
     const setDateFormat = (value)=> {
         let currentDate;
@@ -150,7 +162,8 @@ function Adduser(props) {
         } else if(input === "userDesignation"){
             setUserDesignation(e.target.value)
         } else if(input === "userRole"){
-            setUserRole(e.target.value)
+            setUserRole(e.target.value);
+            onRoleChange(e.target.value);
         } else if(input === "userStatus"){
             setUserStatus(e.target.value);
             onStatusChange(e.target.value);

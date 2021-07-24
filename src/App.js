@@ -7,35 +7,68 @@ import { FiUsers } from 'react-icons/fi';
 import {GiHeartKey} from 'react-icons/gi';
 import "./Components/Login.css";
 
+import axios from "axios";
+
 import './styles/App.scss';
-
-
 
 function App() {
   const [locale, setLocale] = useState('en');
   const [show, setShow] = useState(true);
   const [user, setUser] = useState();
   const [pwd, setpwd] = useState();
+  const [resultSet, SetResult] = useState([]);
     
  const handleSubmit = (e) => {
+
+  e.preventDefault();
    
+  axios.post("http://localhost:3009/loginValidation", {
+    userName  : user,
+    userPwd : pwd,
+   }).then((res) => {
+     console.log("result set in login page: ", res.data);
+     console.log("result set in login page length: ", res.data.length);
+
+     if (res.data.length > 0){
+      SetResult(res.data);
+      afterSubmit(res.data);
+     }else{
+      alert("User Credentials Provided are not matching with the system records. Please provide proper details to login.");
+      setUser("");
+      setpwd("");
+    }
+       
+   });
  
-  //  if (user == "mazhar" && pwd == "mazhar"){
-  //    alert("you are pass");
-     activateRoute();
-     setShow(!show);
-     localStorage.setItem('userName',JSON.stringify(user));
-  //  }
-  //  else{
-  //   alert("you are fail");
-  //   deActivateRoute();
-  //   e.preventDefault();
-  //   return false;
-  //  }
+  
  
    console.log('test :');
   //setShow(!show);
  } 
+
+ const afterSubmit = (dataSet) => {
+    // localStorage.setItem('userName',JSON.stringify(dataSet[0].USER_NAME));
+    // localStorage.setItem('userRole',JSON.stringify(dataSet[0].userrole));
+
+    let activities = "";
+    let userDetails = "";
+
+  if (dataSet.length > 0) {
+
+    for (var i = 0; i < dataSet.length; i++){
+      activities = dataSet[i].ACTIVITY_NAME +","+ activities;
+    }
+
+    userDetails = {"userName" : dataSet[0].USER_NAME, "role": dataSet[0].userrole, activities}
+    
+    localStorage.setItem('userDetails',JSON.stringify(userDetails));
+
+    console.log('activities - : ',activities);
+    activateRoute();
+    setShow(!show);
+  }
+
+ }
  
  const handleChange = (e) => {
   console.log('Change : ', e.target.value);
